@@ -111,6 +111,10 @@ file_format = sys.argv[1].lower()
 if len(sys.argv) > 1:
     IP_DS1104Z = sys.argv[2]
 
+# file to copy to
+if len(sys.argv) > 2:
+    fn_cp = sys.argv[3]
+
 # Check network response (ping)
 if platform.system() == "Windows":
     response = os.system("ping -n 1 " + IP_DS1104Z + " > nul")
@@ -275,9 +279,15 @@ elif file_format == "csv":
 
     # Save data as CSV
     scr_file = open(filename + "." + file_format, "wb")
-    scr_file.write(csv_buff)
+    scr_file.write(csv_buff.encode('utf-8'))
     scr_file.close()
 
     print("Saved file:", "'" + filename + "." + file_format + "'")
+
+    # copy from filename to fn_cp
+    if fn_cp:
+        import shutil
+        shutil.copyfile(filename + "." + file_format, fn_cp)
+        print("Copied to:", "'" + fn_cp + "'")
 
 tn.close()
